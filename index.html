@@ -90,7 +90,7 @@ body{
 .btn-candy{background:linear-gradient(135deg, #FFC2DA 0%, #FF8FB9 100%);}
 .btn-lav{background:linear-gradient(135deg, #E5D8FF 0%, #C4B0FF 100%);}
 .btn-milk{background:#fff}
-.btn-sm{min-height:2.9rem;font-size:.9rem;padding:.4rem 1rem;box-shadow:0 3.5px 0 var(--plum)}
+.btn-sm{min-height:2.7rem;font-size:.9rem;padding:.4rem 1rem;box-shadow:0 3.5px 0 var(--plum)}
 
 /* ---------- NÚT THƯ ẨN DANH "BÙM CHÍU" SIÊU HẤP DẪN ---------- */
 .btn-anon-mega {
@@ -132,8 +132,8 @@ body{
 @keyframes floatChip{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 
 /* ---------- Chuyển bước cực mượt ---------- */
-.step-in{animation:stepIn .45s cubic-bezier(0.34,1.56,0.64,1) both}
-@keyframes stepIn{from{opacity:0;transform:translateY(18px) scale(0.95)}to{opacity:1;transform:none}}
+.step-in{animation:stepIn .35s ease-out both}
+@keyframes stepIn{from{opacity:0;transform:translateY(10px) scale(0.98)}to{opacity:1;transform:none}}
 
 /* ---------- Hộp quà 3D rực rỡ ---------- */
 .giftbox-wrapper{position:relative;width:12.5rem;height:13.5rem;margin:1.5rem auto 1rem; filter:drop-shadow(0 18px 30px rgba(224,69,127,0.3))}
@@ -153,14 +153,14 @@ body{
 .giftbox.open .gb-all,.giftbox.open .gb-shadow{animation:none}
 @keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-8deg)}45%{transform:rotate(8deg)}70%{transform:rotate(-6deg)}}
 
-.gb-glow{position:absolute;left:50%;top:40%;width:19rem;height:19rem;transform:translate(-50%,-50%) scale(.2);border-radius:50%;background:radial-gradient(circle,rgba(255,220,245,.95) 0,rgba(255,241,201,0.6) 40%,rgba(255,241,201,0) 70%);opacity:0;transition:opacity .6s, transform .8s;z-index:0}
+.gb-glow{position:absolute;left:50%;top:40%;width:19rem;height:19rem;transform:translate(-50%,-50%) scale(.2);border-radius:50%;background:radial-gradient(circle,rgba(255,220,245,.95) 0,rgba(255,241,201,0.6) 40%,rgba(255,241,201,0) 70%);opacity:0;transition:opacity .4s, transform .5s;z-index:0}
 .giftbox.open .gb-glow{opacity:1;transform:translate(-50%,-50%) scale(1.2); animation: pulseGlow 2s infinite alternate;}
 @keyframes pulseGlow{from{opacity:0.85;transform:translate(-50%,-50%) scale(1)}to{opacity:1;transform:translate(-50%,-50%) scale(1.25)}}
 
 .gb-body{position:absolute;left:1rem;right:1rem;bottom:0;height:7.2rem;background:linear-gradient(135deg, #FFC2DA 0%, #FF8FB9 100%);border:2.5px solid var(--plum);border-radius:0 0 1.2rem 1.2rem;overflow:hidden;z-index:1;box-shadow:inset 0 -8px 15px rgba(0,0,0,0.06)}
 .gb-body::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2.2rem;transform:translateX(-50%);background:linear-gradient(180deg, #EADFFF 0%, #CDB3FF 100%);border-inline:2.5px solid var(--plum)}
 
-.gb-lid{position:absolute;left:.5rem;right:.5rem;bottom:6.8rem;height:2.5rem;background:linear-gradient(135deg, #FF9FC4 0%, #FF74A8 100%);border:2.5px solid var(--plum);border-radius:.8rem;z-index:3;transform-origin:10% 100%;transition:transform .7s cubic-bezier(.3,1.6,.5,1), opacity .5s .3s;box-shadow:0 4px 10px rgba(0,0,0,0.08)}
+.gb-lid{position:absolute;left:.5rem;right:.5rem;bottom:6.8rem;height:2.5rem;background:linear-gradient(135deg, #FF9FC4 0%, #FF74A8 100%);border:2.5px solid var(--plum);border-radius:.8rem;z-index:3;transform-origin:10% 100%;transition:transform .5s cubic-bezier(.3,1.5,.5,1), opacity .3s .2s;box-shadow:0 4px 10px rgba(0,0,0,0.08)}
 .gb-lid::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2.2rem;transform:translateX(-50%);background:linear-gradient(180deg, #EADFFF 0%, #CDB3FF 100%);border-inline:2.5px solid var(--plum)}
 
 .gb-bow{position:absolute;left:50%;top:-1.4rem;width:4.2rem;height:1.6rem;transform:translateX(-50%);z-index:4}
@@ -169,14 +169,14 @@ body{
 .gb-bow::after{right:0;transform:scaleX(-1) rotate(-15deg)}
 
 .giftbox.open .gb-lid{transform:translate(-2.8rem,-5.2rem) rotate(-35deg);opacity:0}
-.gb-letter{position:absolute;left:50%;bottom:4rem;font-size:3.2rem;transform:translate(-50%,0) scale(.4);opacity:0;transition:transform .9s cubic-bezier(.3,1.5,.5,1) .25s, opacity .3s .25s;z-index:2}
+.gb-letter{position:absolute;left:50%;bottom:4rem;font-size:3.2rem;transform:translate(-50%,0) scale(.4);opacity:0;transition:transform .6s cubic-bezier(.3,1.4,.5,1) .15s, opacity .2s .15s;z-index:2}
 .giftbox.open .gb-letter{transform:translate(-50%,-5.5rem) scale(1.35) rotate(-8deg);opacity:1}
 
 /* ---------- Khung Polaroid Đẳng Cấp ---------- */
 .polaroid{
-  position:relative; background:rgba(255,255,255,0.97); backdrop-filter:blur(20px);
+  position:relative; background:rgba(255,255,255,0.97); backdrop-filter:blur(10px);
   border:3px solid var(--plum); border-radius:1.7rem; padding:1rem 1rem 1.2rem;
-  box-shadow:0 25px 50px -12px rgba(69,39,92,0.2), 0 0 35px rgba(255,185,210,0.6);
+  box-shadow:0 20px 40px -10px rgba(69,39,92,0.15), 0 0 25px rgba(255,185,210,0.5);
 }
 .tape{
   position:absolute;top:-.95rem;width:5.5rem;height:1.45rem;
@@ -208,7 +208,7 @@ body{
 
 .caption{text-align:center;padding-top:.9rem}
 .name-reveal{display:inline-block}
-.name-reveal.play{animation:reveal 1s cubic-bezier(.3,1.6,.5,1) both .2s}
+.name-reveal.play{animation:reveal 0.8s cubic-bezier(.3,1.5,.5,1) both .15s}
 @keyframes reveal{from{opacity:0;transform:perspective(25rem) rotateX(90deg) scale(.5)}to{opacity:1;transform:none}}
 .tag{display:inline-block;margin-top:.4rem;padding:.35rem 1.1rem;border-radius:999px;font-size:.9rem;font-weight:800;background:linear-gradient(135deg, #FFE4EE 0%, #FFC2DA 100%);border:2px solid var(--plum);box-shadow:0 3px 0 var(--plum)}
 
@@ -217,7 +217,7 @@ body{
 /* ---------- Gợi ý tên lộng lẫy ---------- */
 .suggestions-box{
   position:absolute;left:0;right:0;top:100%;margin-top:.4rem;
-  background:rgba(255,255,255,0.99); backdrop-filter:blur(20px);
+  background:rgba(255,255,255,0.99); backdrop-filter:blur(10px);
   border:2.5px solid var(--plum); border-radius:1.1rem;
   max-height:13rem;overflow-y:auto;z-index:50;box-shadow:0 15px 35px rgba(69,39,92,0.2);
   overscroll-behavior:contain;
@@ -226,18 +226,10 @@ body{
 .suggestion-item:last-child{border-bottom:0}
 .suggestion-item:active,.suggestion-item.active{background:#FFE4EE;color:var(--candy-deep)}
 
-/* ---------- Modal Thư Ẩn Danh Sang Trọng ---------- */
+/* ---------- Modal Thư Ẩn Danh Tối Ưu Mượt Mà ---------- */
 .modal-backdrop{
-  position:fixed;inset:0;background:rgba(69,39,92,0.75);backdrop-filter:blur(12px);
-  z-index:100;display:grid;place-items:center;padding:1rem; animation: fadeIn .3s ease;
-}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-/* ---------- Giảm chuyển động cho thiết bị yếu ---------- */
-@media (prefers-reduced-motion: reduce){
-  #ambient{display:none}
-  .gb-all,.gb-shadow,.giftbox.shake .gb-all{animation:none}
-  .step-in,.name-reveal.play{animation:none}
+  position:fixed;inset:0;background:rgba(69,39,92,0.7);backdrop-filter:blur(8px);
+  z-index:100;display:grid;place-items:center;padding:1rem;
 }
 </style>
 </head>
@@ -348,13 +340,21 @@ body{
         <button id="btn-prev-male" class="btn btn-milk btn-sm min-w-0" type="button" hidden>⬅ Bạn nam trước</button>
         <button id="btn-preview" class="btn btn-lav btn-sm min-w-0 col-span-2" type="button">🎲 Xem thử clip bạn nam khác</button>
       </div>
+
+      <!-- Nút nhỏ gọn nhảy thẳng đến cuối không cần xem hết 18 clip -->
+      <div class="text-center pt-1">
+        <button id="btn-skip-outro" class="link-btn text-xs font-bold text-purple-600 hover:text-candy-deep" type="button">
+          ✨ Xem ngay thông điệp cuối lớp 12A1 &gt;&gt;
+        </button>
+      </div>
+
       <button id="btn-mine" class="btn btn-milk btn-sm min-w-0 w-full" type="button" hidden>🎁 Về món quà của mình</button>
 
       <button id="btn-reset" class="btn btn-milk btn-sm mt-1" type="button">Đổi tên khác</button>
     </div>
   </section>
 
-  <!-- Bước 4: Outro Chúc Mừng Toàn Lớp (Sau khi xem đủ 18 clip) -->
+  <!-- Bước 4: Outro Chúc Mừng Toàn Lớp -->
   <section id="step-outro" class="mt-4 w-full max-w-[500px] space-y-4 text-center" hidden>
     <div class="polaroid bg-gradient-to-b from-white via-pink-50/90 to-purple-50/95 p-6 space-y-4 border-4 border-plum shadow-2xl">
       <span class="tape l"></span><span class="tape r"></span>
@@ -370,7 +370,7 @@ body{
         <p class="text-xs italic text-candy-deep">Chúc các bạn luôn xinh đẹp, học giỏi và gặp thật nhiều may mắn!</p>
       </div>
 
-      <!-- Nút Thư Ẩn Danh Siêu Cháy "Bùm Chíu" Không Thể Bỏ Lỡ -->
+      <!-- Nút Thư Ẩn Danh Siêu Cháy -->
       <button id="btn-anon-letter" class="btn btn-anon-mega w-full" type="button" hidden>
         🔥 💌 CÓ 1 BỨC THƯ ẨN DANH GỬI RIÊNG CHO BẠN! ✨
       </button>
@@ -384,7 +384,7 @@ body{
 
 </main>
 
-<!-- Modal Đọc Thư Ẩn Danh -->
+<!-- Modal Đọc Thư Ẩn Danh (Đã tối ưu siêu nhẹ, thêm chữ người gửi rõ ràng) -->
 <div id="anon-modal" class="modal-backdrop" hidden>
   <div class="w-full max-w-[460px] rounded-3xl border-3 border-plum bg-white p-6 shadow-2xl space-y-4 text-left relative max-h-[85vh] overflow-y-auto step-in">
     <div class="flex items-center justify-between border-b-2 border-pink-100 pb-3">
@@ -394,12 +394,12 @@ body{
       <button id="btn-close-modal" class="text-xl font-black text-plum hover:text-candy-deep px-2.5 py-1 rounded-full bg-pink-50" type="button">✕</button>
     </div>
     
-    <div id="anon-content" class="text-sm font-bold text-plum leading-relaxed space-y-3 whitespace-pre-line">
-      <!-- Nội dung thư -->
-    </div>
+    <div id="anon-content" class="text-sm font-bold text-plum leading-relaxed space-y-3 whitespace-pre-line"></div>
 
-    <div id="anon-signature" class="hidden text-right border-t border-purple-100 pt-3 text-xs font-black italic text-lav-deep bg-purple-50/80 p-3 rounded-2xl">
-      <!-- Chữ ký -->
+    <!-- Khối hiển thị chữ người gửi -->
+    <div id="anon-signature" class="hidden border-t-2 border-dashed border-pink-200 pt-3 text-right bg-purple-50/80 p-3 rounded-2xl space-y-1">
+      <span class="text-[11px] font-extrabold uppercase tracking-wider text-pink-600 block">Người gửi:</span>
+      <div id="anon-sig-text" class="text-xs font-black italic text-lav-deep"></div>
     </div>
 
     <button id="btn-close-modal-bottom" class="btn btn-candy btn-sm w-full mt-2" type="button">Đóng thư 💖</button>
@@ -409,10 +409,6 @@ body{
 <script>
 (() => {
 'use strict';
-
-/* =====================================================================
-   DỮ LIỆU LỚP 12A1
-   ===================================================================== */
 
 const MALES = [
   "Huỳnh Phúc An", "Vũ Hoàng Gia Cát", "Nguyễn Hoàng Đạt", "Ngô Minh Đông",
@@ -457,8 +453,8 @@ const PAIRINGS = {
 const COLORS = ['#FFB9D2', '#F0629C', '#D9C9FF', '#9B7BE8', '#FFF1C9', '#FFFFFF'];
 const KEY_LAST_NAME = '12a1_last_name';
 const KEY_HEARTS = '12a1_hearts_';
-const OPEN_DELAY = 600;
-const REVEAL_DELAY = 1200;
+const OPEN_DELAY = 500;
+const REVEAL_DELAY = 1000;
 
 const $ = (id) => document.getElementById(id);
 const rand = (a, b) => a + Math.random() * (b - a);
@@ -494,7 +490,6 @@ let videoTries = [];
 let videoIdx = 0;
 let activeIdx = -1;
 
-/* Quản lý lịch sử các bạn nam đã xem */
 let maleHistory = [];
 let historyIndex = 0;
 
@@ -597,7 +592,6 @@ document.addEventListener('click', (e) => {
   if (!e.target.closest('#name-field')) setSuggestionsOpen(false);
 });
 
-// Sự kiện bấm nút chọn nhanh cho Giáo viên
 document.querySelectorAll('.btn-quick-teacher').forEach((btn) => {
   btn.addEventListener('click', () => {
     const teacherName = btn.getAttribute('data-name');
@@ -647,21 +641,19 @@ function startGiftStep(name) {
 function fireworks() {
   if (!window.confetti) return;
   const base = { colors: COLORS, disableForReducedMotion: true };
-  const end = Date.now() + 1600;
+  const end = Date.now() + 1400;
   (function side() {
-    confetti({ ...base, particleCount: 8, angle: 60,  spread: 80, origin: { x: 0, y: 0.8 } });
-    confetti({ ...base, particleCount: 8, angle: 120, spread: 80, origin: { x: 1, y: 0.8 } });
+    confetti({ ...base, particleCount: 6, angle: 60,  spread: 70, origin: { x: 0, y: 0.8 } });
+    confetti({ ...base, particleCount: 6, angle: 120, spread: 70, origin: { x: 1, y: 0.8 } });
     if (Date.now() < end) requestAnimationFrame(side);
   })();
 
-  [0, 350, 750].forEach((delay) => {
-    setTimeout(() => {
-      confetti({
-        ...base, particleCount: 100, spread: 360, startVelocity: 35, ticks: 90,
-        origin: { x: rand(0.2, 0.8), y: rand(0.2, 0.5) }
-      });
-    }, delay);
-  });
+  setTimeout(() => {
+    confetti({
+      ...base, particleCount: 70, spread: 360, startVelocity: 30, ticks: 80,
+      origin: { x: rand(0.3, 0.7), y: rand(0.3, 0.5) }
+    });
+  }, 200);
 }
 
 function openGift() {
@@ -700,8 +692,6 @@ function initSession() {
 
 function renderCurrentSession() {
   const currentMale = maleHistory[historyIndex];
-  
-  // Kiểm tra tài khoản giáo viên
   const isTeacher = (currentUser.includes('Cô Dịch Thị Hồng Ánh') || currentUser.includes('Cô Bảo Trân') || currentUser.includes('GVCN') || currentUser.includes('GVTT'));
   const isOfficial = (historyIndex === 0);
 
@@ -717,7 +707,6 @@ function renderCurrentSession() {
     $('btn-mine').hidden = false;
   }
 
-  // Ẩn nhóm nút xem thử các bạn nam nếu là Giáo viên
   if (isTeacher) {
     $('male-nav-group').hidden = true;
   } else {
@@ -735,7 +724,6 @@ function renderCurrentSession() {
 function previewOtherMale() {
   let available = MALES.filter((m) => !maleHistory.includes(m));
   
-  // Khi xem đủ hết 18 bạn nam ➔ Chuyển qua Màn hình Outro
   if (!available.length && maleHistory.length >= 18) {
     showOutro();
     return;
@@ -851,7 +839,6 @@ function loadMedia(maleName, femaleName) {
   });
 }
 
-/* Kiểm tra thư ẩn danh dạng assets/AD/AD_[Tên].txt */
 async function checkAnonLetter() {
   const btn = $('btn-anon-letter');
   btn.hidden = true;
@@ -892,16 +879,16 @@ function openAnonModal(rawText) {
 
   $('anon-content').textContent = body;
   
-  const sigEl = $('anon-signature');
+  const sigBox = $('anon-signature');
+  const sigText = $('anon-sig-text');
   if (sig) {
-    sigEl.textContent = sig;
-    sigEl.classList.remove('hidden');
+    sigText.textContent = sig;
+    sigBox.classList.remove('hidden');
   } else {
-    sigEl.classList.add('hidden');
+    sigBox.classList.add('hidden');
   }
 
   $('anon-modal').hidden = false;
-  fireworks();
 }
 
 function closeAnonModal() {
@@ -922,9 +909,9 @@ function heartEffect() {
   updateHeartUI();
   if (!window.confetti) return;
   let heart = null;
-  try { heart = confetti.shapeFromText({ text: '💖', scalar: 2.2 }); } catch (e) {}
+  try { heart = confetti.shapeFromText({ text: '💖', scalar: 2.0 }); } catch (e) {}
   confetti({
-    particleCount: 20, spread: 80, origin: { y: 0.75 }, scalar: 2, colors: COLORS,
+    particleCount: 15, spread: 70, origin: { y: 0.75 }, scalar: 1.8, colors: COLORS,
     shapes: heart ? [heart] : ['circle'], disableForReducedMotion: true
   });
 }
@@ -948,9 +935,9 @@ function backToName(clear) {
 
 $('btn-login').addEventListener('click', handleLogin);
 gift.addEventListener('click', openGift);
-$('btn-open').addEventListener('click', openGift);
-$('btn-back-name').addEventListener('click', () => backToName(false));$('btn-heart').addEventListener('click', heartEffect);
-$('btn-prev-male').addEventListener('click', prevMale);$('btn-preview').addEventListener('click', previewOtherMale);
+$('btn-open').addEventListener('click', openGift);$('btn-back-name').addEventListener('click', () => backToName(false));
+$('btn-heart').addEventListener('click', heartEffect);$('btn-prev-male').addEventListener('click', prevMale);
+$('btn-preview').addEventListener('click', previewOtherMale);$('btn-skip-outro').addEventListener('click', showOutro); /* Nút nhảy thẳng đến cuối */
 $('btn-mine').addEventListener('click', showOfficial);$('btn-reset').addEventListener('click', () => backToName(true));
 
 $('btn-outro-mine').addEventListener('click', () => { showStep('step-result'); showOfficial(); });$('btn-outro-reset').addEventListener('click', () => backToName(true));
