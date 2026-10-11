@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -33,7 +34,6 @@
     }
   };
 </script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 <style>
 :root{
@@ -57,13 +57,13 @@ body{
   overflow-x:hidden;
 }
 
-/* ---------- Hiệu ứng nền siêu nhẹ (đã giảm bớt hạt) ---------- */
+/* ---------- Hiệu ứng nền bay bay (đã tăng số lượng hạt) ---------- */
 #ambient{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1}
-#ambient span{position:absolute;opacity:.6;will-change:transform}
+#ambient span{position:absolute;opacity:.65;will-change:transform}
 #ambient .fall{top:-10%;animation:fall linear infinite}
 #ambient .rise{bottom:-10%;animation:rise linear infinite}
-@keyframes fall{from{transform:translate3d(0,-10vh,0)}to{transform:translate3d(var(--dx,20px),110vh,0)}}
-@keyframes rise{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--dx,15px),-115vh,0)}}
+@keyframes fall{from{transform:translate3d(0,-10vh,0) rotate(0deg)}to{transform:translate3d(var(--dx,20px),110vh,0) rotate(360deg)}}
+@keyframes rise{from{transform:translate3d(0,0,0) rotate(0deg)}to{transform:translate3d(var(--dx,15px),-115vh,0) rotate(-360deg)}}
 
 /* ---------- Nút & chip mượt mà ---------- */
 .btn{
@@ -83,13 +83,23 @@ body{
 .btn-milk{background:#fff}
 .btn-sm{min-height:2.7rem;font-size:.9rem;padding:.4rem 1rem;box-shadow:0 3px 0 var(--plum)}
 
-/* ---------- Nút Thư Ẩn Danh ---------- */
+/* ---------- Nút Thư Ẩn Danh lấp lánh mượt mà cho ĐT ---------- */
 .btn-anon-mega {
   background: linear-gradient(135deg, #ff2a75 0%, #9333ea 50%, #ec4899 100%);
+  background-size: 200% 200%;
+  animation: glowMove 3s ease infinite;
   color: #fff !important;
   border: 3px solid #fff;
-  box-shadow: 0 5px 0 var(--plum);
-  font-size: 1.1rem;
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.6), 0 5px 0 var(--plum);
+  font-size: 0.95rem; /* Thu nhỏ chữ một chút để vừa vặn trên điện thoại */
+  padding: 0.75rem 1rem;
+  white-space: normal; /* Cho phép xuống dòng thông minh trên mobile */
+  line-height: 1.3;
+}
+@keyframes glowMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .link-btn{
@@ -185,7 +195,7 @@ body{
 .suggestion-item:last-child{border-bottom:0}
 .suggestion-item:active,.suggestion-item.active{background:#FFE4EE;color:var(--candy-deep)}
 
-/* ---------- Modal Thư Ẩn Danh (Đã bỏ blur hoàn toàn để chống lag) ---------- */
+/* ---------- Modal Thư Ẩn Danh ---------- */
 .modal-backdrop{
   position:fixed;inset:0;background:rgba(40, 20, 55, 0.75);
   z-index:100;display:grid;place-items:center;padding:1rem;
@@ -329,7 +339,7 @@ body{
         <p class="text-xs italic text-candy-deep">Chúc các bạn luôn xinh đẹp, học giỏi và gặp thật nhiều may mắn!</p>
       </div>
 
-      <!-- Nút Thư Ẩn Danh -->
+      <!-- Nút Thư Ẩn Danh lấp lánh (Đã tinh chỉnh chống tràn trên mobile) -->
       <button id="btn-anon-letter" class="btn btn-anon-mega w-full" type="button" hidden>
         🔥 💌 CÓ 1 BỨC THƯ ẨN DANH GỬI RIÊNG CHO BẠN! ✨
       </button>
@@ -343,7 +353,7 @@ body{
 
 </main>
 
-<!-- Modal Đọc Thư Ẩn Danh (Siêu nhẹ, không giật lag) -->
+<!-- Modal Đọc Thư Ẩn Danh -->
 <div id="anon-modal" class="modal-backdrop" hidden>
   <div class="w-full max-w-[460px] rounded-3xl border-3 border-plum bg-white p-6 shadow-2xl space-y-4 text-left relative max-h-[85vh] overflow-y-auto">
     <div class="flex items-center justify-between border-b-2 border-pink-100 pb-3">
@@ -595,7 +605,6 @@ function startGiftStep(name) {
   showStep('step-gift');
 }
 
-/* Bắn pháo hoa siêu nhẹ (Chỉ bắn 1 đợt ngắn, không dùng loop dồn dập) */
 function fireworks() {
   if (!window.confetti) return;
   confetti({
@@ -894,19 +903,19 @@ $('btn-mine').addEventListener('click', showOfficial);$('btn-reset').addEventLis
 
 $('btn-outro-mine').addEventListener('click', () => { showStep('step-result'); showOfficial(); });$('btn-outro-reset').addEventListener('click', () => backToName(true));
 
-/* Tạo hạt trôi nền nhẹ (giảm xuống 6 hạt) */
+/* Tăng số lượng hạt trôi nền lên 16 hạt cho sinh động nhưng vẫn mượt */
 (function ambient() {
   const layer = $('ambient');
-  const items = ['🌸', '💗', '🌷', '💖', '✨'];
-  for (let i = 0; i < 6; i++) {
+  const items = ['🌸', '💗', '🌷', '💖', '✨', '🎈', '💜'];
+  for (let i = 0; i < 16; i++) {
     const ch = items[i % items.length];
     const s = document.createElement('span');
     s.textContent = ch;
     s.className = (i % 2 === 0) ? 'fall' : 'rise';
     s.style.cssText =
-      `left:${rand(5, 90).toFixed(0)}%;font-size:${rand(1.2, 1.8).toFixed(2)}rem;` +
-      `animation-duration:${(12 + rand(0, 4)).toFixed(1)}s;` +
-      `animation-delay:-${rand(0, 10).toFixed(1)}s;--dx:${rand(-20, 20).toFixed(0)}px`;
+      `left:${rand(2, 95).toFixed(0)}%;font-size:${rand(1.1, 1.7).toFixed(2)}rem;` +
+      `animation-duration:${(10 + rand(0, 6)).toFixed(1)}s;` +
+      `animation-delay:-${rand(0, 12).toFixed(1)}s;--dx:${rand(-25, 25).toFixed(0)}px`;
     layer.appendChild(s);
   }
 })();
