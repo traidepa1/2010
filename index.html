@@ -34,8 +34,6 @@
   };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<!-- Thư viện chụp thiệp tải ảnh về máy -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
 :root{
@@ -92,7 +90,7 @@ body{
 .btn-candy{background:linear-gradient(135deg, #FFC2DA 0%, #FF8FB9 100%);}
 .btn-lav{background:linear-gradient(135deg, #E5D8FF 0%, #C4B0FF 100%);}
 .btn-milk{background:#fff}
-.btn-sm{min-height:2.7rem;font-size:.9rem;padding:.4rem 1.2rem;box-shadow:0 3.5px 0 var(--plum)}
+.btn-sm{min-height:2.9rem;font-size:.9rem;padding:.4rem 1rem;box-shadow:0 3.5px 0 var(--plum)}
 
 /* ---------- NÚT THƯ ẨN DANH "BÙM CHÍU" SIÊU HẤP DẪN ---------- */
 .btn-anon-mega {
@@ -228,24 +226,14 @@ body{
 .suggestion-item:last-child{border-bottom:0}
 .suggestion-item:active,.suggestion-item.active{background:#FFE4EE;color:var(--candy-deep)}
 
-/* ---------- Modal Sang Trọng ---------- */
+/* ---------- Modal Thư Ẩn Danh Sang Trọng ---------- */
 .modal-backdrop{
   position:fixed;inset:0;background:rgba(69,39,92,0.75);backdrop-filter:blur(12px);
   z-index:100;display:grid;place-items:center;padding:1rem; animation: fadeIn .3s ease;
 }
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-/* ---------- STYLES CỐ ĐỊNH CHUẨN XÁC CHO THIỆP CHỤP ẢNH ---------- */
-#cert-card-print {
-  background-color: #FFFDF7 !important;
-  background-image: none !important;
-  box-shadow: none !important;
-  width: 100%;
-  max-width: 440px;
-  margin: 0 auto;
-  box-sizing: border-box;
-}
-
+/* ---------- Giảm chuyển động cho thiết bị yếu ---------- */
 @media (prefers-reduced-motion: reduce){
   #ambient{display:none}
   .gb-all,.gb-shadow,.giftbox.shake .gb-all{animation:none}
@@ -336,48 +324,37 @@ body{
         <video id="vid" playsinline controls preload="auto"></video>
         <button class="bigplay" id="bigPlay" type="button" aria-label="Phát video" hidden>▶</button>
         <div class="vid-err" id="vidErr" hidden>
-          <b class="font-display text-base">Thiệp Video Kính Tặng Cô 💐</b>
-          <span class="text-xs">Tập thể 12A1 gửi ngàn lời tri ân sâu sắc nhất tới Cô!</span>
-          <div class="flex flex-wrap items-center justify-center gap-2 mt-2">
-            <button id="vidRetry" class="link-btn bg-candy-deep text-white rounded-full px-3 py-1 no-underline text-xs" type="button">Tải lại clip</button>
-          </div>
+          <b class="font-display text-base">Clip chưa tải được 🎀</b>
+          <span class="text-xs">Bạn thử tải lại clip nhé.</span>
+          <button id="vidRetry" class="link-btn" type="button">Tải lại clip</button>
           <code id="vidErrPath"></code>
         </div>
       </div>
-      <div class="caption space-y-2">
+      <div class="caption">
         <p class="text-sm font-bold text-plum-soft" id="senderLabel"></p>
         <p class="mt-0.5"><span id="capName" class="name-reveal font-display text-2xl font-extrabold text-candy-deep"></span></p>
-        <div><span class="tag" id="giftTag"></span></div>
-        
-        <div id="cert-badge-box" class="pt-2 flex flex-col items-center justify-center gap-2.5">
-          <span id="badge-title-display" class="px-4 py-1.5 rounded-full bg-purple-100 text-purple-950 border-2 border-purple-300 font-extrabold text-xs sm:text-sm shadow-2xs">
-            Danh hiệu: Đang tải...
-          </span>
-
-          <button id="btn-open-cert" type="button" class="btn btn-candy btn-sm w-auto px-5 font-black text-sm flex items-center justify-center gap-1.5 shadow-md hover:scale-105 active:scale-95 transition-all">
-            <span>🎗️ Xem Thiệp Vinh Danh</span>
-          </button>
-        </div>
+        <span class="tag" id="giftTag"></span>
       </div>
     </div>
 
     <div class="mx-auto grid w-full gap-2.5">
       <p id="wish-text" class="wish rounded-2xl border-2 border-plum bg-white/95 p-4 text-center text-[0.98rem] font-bold italic leading-relaxed text-purple-900 shadow-md">Đang tải lời chúc...</p>
 
-      <button id="btn-heart" class="btn btn-candy" type="button">💖 THẢ TIM / CẢM ƠN 💖</button>
+      <button id="btn-heart" class="btn btn-candy" type="button">💖 Thả tim / Cảm ơn</button>
       <p id="heartCount" class="-mt-1 min-h-[1.2rem] text-center text-sm font-extrabold text-candy-deep" aria-live="polite"></p>
 
+      <!-- Các nút điều hướng xem bạn nam (Chỉ hiện cho học sinh) -->
       <div id="male-nav-group" class="mt-1 grid grid-cols-2 gap-2">
         <button id="btn-prev-male" class="btn btn-milk btn-sm min-w-0" type="button" hidden>⬅ Bạn nam trước</button>
         <button id="btn-preview" class="btn btn-lav btn-sm min-w-0 col-span-2" type="button">🎲 Xem thử clip bạn nam khác</button>
       </div>
       <button id="btn-mine" class="btn btn-milk btn-sm min-w-0 w-full" type="button" hidden>🎁 Về món quà của mình</button>
 
-      <button id="btn-reset" class="btn btn-milk btn-sm mt-1" type="button">🔄 Đổi tên người nhận khác</button>
+      <button id="btn-reset" class="btn btn-milk btn-sm mt-1" type="button">Đổi tên khác</button>
     </div>
   </section>
 
-  <!-- Bước 4: Outro Chúc Mừng Toàn Lớp -->
+  <!-- Bước 4: Outro Chúc Mừng Toàn Lớp (Sau khi xem đủ 18 clip) -->
   <section id="step-outro" class="mt-4 w-full max-w-[500px] space-y-4 text-center" hidden>
     <div class="polaroid bg-gradient-to-b from-white via-pink-50/90 to-purple-50/95 p-6 space-y-4 border-4 border-plum shadow-2xl">
       <span class="tape l"></span><span class="tape r"></span>
@@ -393,22 +370,17 @@ body{
         <p class="text-xs italic text-candy-deep">Chúc các bạn luôn xinh đẹp, học giỏi và gặp thật nhiều may mắn!</p>
       </div>
 
+      <!-- Nút Thư Ẩn Danh Siêu Cháy "Bùm Chíu" Không Thể Bỏ Lỡ -->
       <button id="btn-anon-letter" class="btn btn-anon-mega w-full" type="button" hidden>
         🔥 💌 CÓ 1 BỨC THƯ ẨN DANH GỬI RIÊNG CHO BẠN! ✨
       </button>
 
       <div class="pt-2 space-y-2">
-        <button id="btn-outro-cert" class="btn btn-milk btn-sm w-full font-bold" type="button">🎗️ Xem Thiệp Giấy Khen Vinh Danh</button>
         <button id="btn-outro-mine" class="btn btn-candy w-full" type="button">🔄 Xem lại món quà của tôi</button>
         <button id="btn-outro-reset" class="btn btn-milk btn-sm w-full" type="button">Đổi tên người xem khác</button>
       </div>
     </div>
   </section>
-
-  <!-- Chân trang Footer -->
-  <footer class="mt-8 text-center text-xs font-extrabold text-plum-soft pb-4">
-    <p>© 2026 Tập thể 12A1 · Chúc mừng ngày Phụ Nữ Việt Nam 20/10 💖</p>
-  </footer>
 
 </main>
 
@@ -422,80 +394,25 @@ body{
       <button id="btn-close-modal" class="text-xl font-black text-plum hover:text-candy-deep px-2.5 py-1 rounded-full bg-pink-50" type="button">✕</button>
     </div>
     
-    <div id="anon-content" class="text-sm font-bold text-plum leading-relaxed space-y-3 whitespace-pre-line"></div>
-    <div id="anon-signature" class="hidden text-right border-t border-purple-100 pt-3 text-xs font-black italic text-lav-deep bg-purple-50/80 p-3 rounded-2xl"></div>
+    <div id="anon-content" class="text-sm font-bold text-plum leading-relaxed space-y-3 whitespace-pre-line">
+      <!-- Nội dung thư -->
+    </div>
+
+    <div id="anon-signature" class="hidden text-right border-t border-purple-100 pt-3 text-xs font-black italic text-lav-deep bg-purple-50/80 p-3 rounded-2xl">
+      <!-- Chữ ký -->
+    </div>
 
     <button id="btn-close-modal-bottom" class="btn btn-candy btn-sm w-full mt-2" type="button">Đóng thư 💖</button>
-  </div>
-</div>
-
-<!-- Modal Giấy Khen / Thiệp Vinh Danh (FIX CHUẨN KHI TẢI ẢNH) -->
-<div id="cert-modal" class="modal-backdrop" hidden>
-  <div class="w-full max-w-[480px] rounded-3xl border-3 border-plum bg-white p-4 sm:p-5 shadow-2xl space-y-4 text-center relative max-h-[92vh] overflow-y-auto step-in">
-    
-    <button id="btn-close-cert" class="absolute top-3 right-3 text-lg font-black text-plum hover:text-candy-deep px-2.5 py-0.5 rounded-full bg-pink-50 z-20" type="button">✕</button>
-
-    <!-- TẤM THIỆP ĐÃ ĐƯỢC CỐ ĐỊNH FLEX ĐỂ KHÔNG BỊ LỆCH KHI TẢI -->
-    <div id="cert-card-print" class="p-5 rounded-2xl border-4 border-amber-300 bg-[#FFFDF7] relative space-y-3.5 text-center">
-      
-      <!-- Tiêu đề bọc chung 1 dòng flex có chiều cao cố định để chống lệch khi render canvas -->
-      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding-top: 4px;">
-        <span style="font-size: 18px; line-height: 1;">👑</span>
-        <span style="font-size: 11px; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase; color: #78350f; background-color: #fef3c7; padding: 6px 14px; border-radius: 9999px; border: 1px solid #fcd34d; display: inline-block;">
-          CHỨNG NHẬN VINH DANH 20/10
-        </span>
-        <span style="font-size: 18px; line-height: 1;">👑</span>
-      </div>
-
-      <h3 class="font-display text-xl font-extrabold text-plum">
-        TẬP THỂ LỚP 12A1
-      </h3>
-
-      <p class="text-xs font-bold text-plum-soft">
-        Trân trọng trao tặng danh hiệu danh dự đến:
-      </p>
-
-      <div class="py-0.5">
-        <span id="cert-user-name" class="font-display text-2xl font-extrabold text-candy-deep tracking-tight block"></span>
-      </div>
-
-      <div class="p-3.5 rounded-xl bg-white border-2 border-dashed border-pink-300 space-y-1">
-        <div id="cert-badge-text" class="font-display text-lg font-extrabold text-purple-900 flex items-center justify-center gap-1">✨ Đang tải...</div>
-        <p id="cert-desc-text" class="text-xs font-bold text-plum-soft italic">"Đang tải..."</p>
-      </div>
-
-      <div class="flex items-end justify-between pt-2 text-left w-full">
-        <div class="text-[10px] font-bold text-plum-soft leading-tight">
-          <p>Niên khóa: 2024 - 2027</p>
-          <p class="text-pink-600 font-extrabold mt-0.5">Ngày trao: 19/10/2026</p>
-        </div>
-
-        <div class="text-right">
-          <div class="w-11 h-11 rounded-full border-2 border-amber-500 bg-amber-100 text-amber-800 flex items-center justify-center font-display text-[8px] font-black shadow-xs rotate-12 ml-auto">
-            12A1 SEAL
-          </div>
-          <span class="text-[9px] font-black text-plum block mt-1">
-            Hội Nam Sinh 12A1
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Khối nút bấm bên dưới modal -->
-    <div class="flex flex-col sm:flex-row gap-2 pt-1 items-center justify-center">
-      <button id="btn-download-cert" type="button" class="btn btn-candy btn-sm flex-1 font-extrabold text-xs w-full">
-        ✨ Chia sẻ / Tải thiệp về máy
-      </button>
-      <button id="btn-close-cert-bottom" type="button" class="btn btn-milk btn-sm px-6 text-xs font-extrabold w-auto">
-        Đóng
-      </button>
-    </div>
   </div>
 </div>
 
 <script>
 (() => {
 'use strict';
+
+/* =====================================================================
+   DỮ LIỆU LỚP 12A1
+   ===================================================================== */
 
 const MALES = [
   "Huỳnh Phúc An", "Vũ Hoàng Gia Cát", "Nguyễn Hoàng Đạt", "Ngô Minh Đông",
@@ -537,41 +454,6 @@ const PAIRINGS = {
   "Cô Bảo Trân (GV thực tập)":   "GVTT"
 };
 
-let TITLES_12A1 = {};
-RECIPIENTS.forEach((name, index) => {
-  TITLES_12A1[name] = { badge: `Danh hiệu ${index + 1} ✨`, desc: "Mô tả danh hiệu tuyệt vời của 12A1" };
-});
-
-async function loadTVDData() {
-  try {
-    const res = await fetch('assets/TVD.txt', { cache: 'no-cache' });
-    if (!res.ok) return;
-    const text = await res.text();
-    const blocks = text.split(/^---$/m);
-    
-    blocks.forEach((block) => {
-      const lines = block.trim().split('\n');
-      if (lines.length > 0) {
-        const firstLine = lines[0].trim();
-        const parts = firstLine.split('-');
-        if (parts.length >= 3) {
-          const stt = parseInt(parts[0].trim(), 10);
-          const badge = parts[1].trim();
-          const desc = parts.slice(2).join('-').trim();
-          
-          if (!isNaN(stt) && stt >= 1 && stt <= RECIPIENTS.length) {
-            const recipientName = RECIPIENTS[stt - 1];
-            TITLES_12A1[recipientName] = { badge, desc };
-          }
-        }
-      }
-    });
-  } catch (e) {
-    console.log('Không tìm thấy file TVD.txt hoặc lỗi đọc file, dùng dữ liệu mặc định.');
-  }
-}
-loadTVDData();
-
 const COLORS = ['#FFB9D2', '#F0629C', '#D9C9FF', '#9B7BE8', '#FFF1C9', '#FFFFFF'];
 const KEY_LAST_NAME = '12a1_last_name';
 const KEY_HEARTS = '12a1_hearts_';
@@ -612,6 +494,7 @@ let videoTries = [];
 let videoIdx = 0;
 let activeIdx = -1;
 
+/* Quản lý lịch sử các bạn nam đã xem */
 let maleHistory = [];
 let historyIndex = 0;
 
@@ -714,6 +597,7 @@ document.addEventListener('click', (e) => {
   if (!e.target.closest('#name-field')) setSuggestionsOpen(false);
 });
 
+// Sự kiện bấm nút chọn nhanh cho Giáo viên
 document.querySelectorAll('.btn-quick-teacher').forEach((btn) => {
   btn.addEventListener('click', () => {
     const teacherName = btn.getAttribute('data-name');
@@ -816,6 +700,8 @@ function initSession() {
 
 function renderCurrentSession() {
   const currentMale = maleHistory[historyIndex];
+  
+  // Kiểm tra tài khoản giáo viên
   const isTeacher = (currentUser.includes('Cô Dịch Thị Hồng Ánh') || currentUser.includes('Cô Bảo Trân') || currentUser.includes('GVCN') || currentUser.includes('GVTT'));
   const isOfficial = (historyIndex === 0);
 
@@ -831,9 +717,7 @@ function renderCurrentSession() {
     $('btn-mine').hidden = false;
   }
 
-  const titleInfo = TITLES_12A1[currentUser] || { badge: "Nữ Thần 12A1 ✨", desc: "Đóa hoa xinh đẹp và rạng rỡ của lớp 12A1" };
-  $('badge-title-display').textContent = `Danh hiệu: ${titleInfo.badge}`;
-
+  // Ẩn nhóm nút xem thử các bạn nam nếu là Giáo viên
   if (isTeacher) {
     $('male-nav-group').hidden = true;
   } else {
@@ -850,6 +734,8 @@ function renderCurrentSession() {
 
 function previewOtherMale() {
   let available = MALES.filter((m) => !maleHistory.includes(m));
+  
+  // Khi xem đủ hết 18 bạn nam ➔ Chuyển qua Màn hình Outro
   if (!available.length && maleHistory.length >= 18) {
     showOutro();
     return;
@@ -965,6 +851,7 @@ function loadMedia(maleName, femaleName) {
   });
 }
 
+/* Kiểm tra thư ẩn danh dạng assets/AD/AD_[Tên].txt */
 async function checkAnonLetter() {
   const btn = $('btn-anon-letter');
   btn.hidden = true;
@@ -1004,6 +891,7 @@ function openAnonModal(rawText) {
   const sig = parts[1] ? parts[1].trim() : '';
 
   $('anon-content').textContent = body;
+  
   const sigEl = $('anon-signature');
   if (sig) {
     sigEl.textContent = sig;
@@ -1021,51 +909,6 @@ function closeAnonModal() {
 }
 
 $('btn-close-modal').addEventListener('click', closeAnonModal);$('btn-close-modal-bottom').addEventListener('click', closeAnonModal);
-
-function openCertModal() {
-  const titleInfo = TITLES_12A1[currentUser] || {
-    badge: "Nữ Thần 12A1 ✨",
-    desc: "Đóa hoa xinh đẹp và rạng rỡ của lớp 12A1"
-  };
-
-  $('cert-user-name').textContent = currentUser;
-  $('cert-badge-text').textContent = `✨ ${titleInfo.badge}`;
-  $('cert-desc-text').textContent = `"${titleInfo.desc}"`;
-
-  $('cert-modal').hidden = false;
-  fireworks();
-}
-
-function closeCertModal() {
-  $('cert-modal').hidden = true;
-}
-
-$('btn-open-cert').addEventListener('click', openCertModal);$('btn-outro-cert').addEventListener('click', openCertModal);
-$('btn-close-cert').addEventListener('click', closeCertModal);$('btn-close-cert-bottom').addEventListener('click', closeCertModal);
-
-/* Tải Thiệp Giấy Khen dạng ảnh nét căng chuẩn tuyệt đối */
-$('btn-download-cert').addEventListener('click', () => {
-  const target = $('cert-card-print');
-  if (window.html2canvas) {
-    html2canvas(target, { 
-      scale: 3, 
-      useCORS: true,
-      backgroundColor: '#FFFDF7',
-      logging: false
-    }).then((canvas) => {
-      const link = document.createElement('a');
-      link.download = `Thiep_Vinh_Danh_12A1_${currentUser.replace(/\s+/g, '_')}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
-  } else if (navigator.share) {
-    navigator.share({
-      title: `Chứng Nhận 12A1 - ${currentUser}`,
-      text: `Chứng nhận vinh danh dành cho ${currentUser} nhân ngày 20/10! ✨`,
-      url: window.location.href
-    }).catch(() => {});
-  }
-});
 
 function getHearts() { return parseInt(store.get(KEY_HEARTS + currentUser) || '0', 10) || 0; }
 
