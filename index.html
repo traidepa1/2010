@@ -900,4 +900,75 @@ function closeAnonModal() {
 
 $('btn-close-modal').addEventListener('click', closeAnonModal);$('btn-close-modal-bottom').addEventListener('click', closeAnonModal);
 
-function getHearts() { return parseInt(store.get(KEY_HEARTS
+function getHearts() { return parseInt(store.get(KEY_HEARTS + currentUser) || '0', 10) || 0; }
+
+function updateHeartUI() {
+  const n = getHearts();
+  $('heartCount').textContent = n ? `Bạn đã thả ${n} tim 💗` : '';
+}
+
+function heartEffect() {
+  store.set(KEY_HEARTS + currentUser, String(getHearts() + 1));
+  updateHeartUI();
+  if (!window.confetti) return;
+  confetti({
+    particleCount: 12,
+    spread: 50,
+    origin: { y: 0.75 },
+    colors: COLORS,
+    disableForReducedMotion: true
+  });
+}
+
+function backToName(clear) {
+  loadToken++;
+  vid.pause();
+  vid.removeAttribute('src');
+  vid.load();
+  vidErr.hidden = true;
+  bigPlay.hidden = true;
+  currentUser = '';
+  maleHistory = [];
+  historyIndex = 0;
+  if (clear) { input.value = ''; store.del(KEY_LAST_NAME); }
+  showError('');
+  setSuggestionsOpen(false);
+  resetGift();
+  showStep('step-select');
+}
+
+$('btn-login').addEventListener('click', handleLogin);
+gift.addEventListener('click', openGift);
+$('btn-open').addEventListener('click', openGift);$('btn-back-name').addEventListener('click', () => backToName(false));
+$('btn-heart').addEventListener('click', heartEffect);$('btn-prev-male').addEventListener('click', prevMale);
+$('btn-preview').addEventListener('click', previewOtherMale);$('btn-skip-outro').addEventListener('click', showOutro);
+$('btn-mine').addEventListener('click', showOfficial);$('btn-reset').addEventListener('click', () => backToName(true));
+
+$('btn-outro-mine').addEventListener('click', () => { showStep('step-result'); showOfficial(); });$('btn-outro-reset').addEventListener('click', () => backToName(true));
+
+(function ambient() {
+  const layer = $('ambient');
+  const items = ['🌸', '💗', '🌷', '💖', '✨', '🎈', '💜'];
+  for (let i = 0; i < 16; i++) {
+    const ch = items[i % items.length];
+    const s = document.createElement('span');
+    s.textContent = ch;
+    s.className = (i % 2 === 0) ? 'fall' : 'rise';
+    s.style.cssText =
+      `left:${rand(2, 95).toFixed(0)}%;font-size:${rand(1.1, 1.7).toFixed(2)}rem;` +
+      `animation-duration:${(10 + rand(0, 6)).toFixed(1)}s;` +
+      `animation-delay:-${rand(0, 12).toFixed(1)}s;--dx:${rand(-25, 25).toFixed(0)}px`;
+    layer.appendChild(s);
+  }
+})();
+
+loadPairings().then(() => {
+  const remembered = store.get(KEY_LAST_NAME);
+  if (remembered && RECIPIENTS.includes(remembered)) input.value = remembered;
+  showStep('step-select');
+});
+
+})();
+</script>
+</body>
+</html>
