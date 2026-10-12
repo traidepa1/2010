@@ -232,19 +232,12 @@ body{
         <p id="name-error" role="alert" class="text-xs font-bold text-candy-deep" hidden></p>
         <p class="text-xs italic text-plum-soft">💡 Gõ vài chữ (không dấu cũng được), rồi chọn đúng tên mình trong danh sách.</p>
 
-        <!-- Khối chọn nhanh cho Cô Giáo -->
-        <div class="mt-3 pt-3 border-t border-pink-200/80">
+        <!-- Khối chọn nhanh tự động sinh ra từ file pairings.txt -->
+        <div id="teacher-quick-block" class="mt-3 pt-3 border-t border-pink-200/80" hidden>
           <p class="text-xs font-black text-plum mb-1.5 flex items-center gap-1">
             <span>🌸</span> Chọn nhanh cho các Cô giáo:
           </p>
-          <div class="flex flex-wrap gap-2">
-            <button type="button" class="btn-quick-teacher px-3 py-1.5 rounded-full bg-white border-2 border-plum text-xs font-extrabold text-plum hover:bg-candy-soft shadow-xs" data-name="Cô Dịch Thị Hồng Ánh (GVCN)">
-              💐 Cô Ánh (GVCN)
-            </button>
-            <button type="button" class="btn-quick-teacher px-3 py-1.5 rounded-full bg-white border-2 border-plum text-xs font-extrabold text-plum hover:bg-candy-soft shadow-xs" data-name="Cô Bảo Trân (GV thực tập)">
-              🌷 Cô Bảo Trân (GVTT)
-            </button>
-          </div>
+          <div id="teacher-buttons-container" class="flex flex-wrap gap-2"></div>
         </div>
       </div>
 
@@ -390,15 +383,10 @@ const MALES = [
   "Võ Minh Trí", "Trịnh Tuấn Vỹ"
 ];
 
-let RECIPIENTS = [
-  "Cô Dịch Thị Hồng Ánh (GVCN)", "Cô Bảo Trân (GV thực tập)"
-];
-let PAIRINGS = {
-  "Cô Dịch Thị Hồng Ánh (GVCN)": "GVCN",
-  "Cô Bảo Trân (GV thực tập)":   "GVTT"
-};
+let RECIPIENTS = [];
+let PAIRINGS = {};
 
-// Đọc file pairings.txt tự động để lấy danh sách nữ - nam
+// Đọc file pairings.txt tự động và tạo nút chọn nhanh cho giáo viên
 async function loadPairingsFromFile() {
   try {
     const res = await fetch('pairings.txt', { cache: 'no-cache' });
@@ -407,7 +395,6 @@ async function loadPairingsFromFile() {
     const lines = text.split(/\r?\n/);
     
     lines.forEach(line => {
-      // Loại bỏ số thứ tự ở đầu (vd: "1 Gia An - Dang Khoi" -> "Gia An - Dang Khoi")
       const cleaned = line.replace(/^\d+[\.\)]?\s*/, '').trim();
       if (!cleaned || cleaned.startsWith('---')) return;
       
@@ -417,15 +404,45 @@ async function loadPairingsFromFile() {
         const male = parts[1].trim();
         if (female && male) {
           if (!RECIPIENTS.includes(female)) {
-            RECIPIENTS.unshift(female); // Thêm vào danh sách nữ
+            RECIPIENTS.push(female);
           }
-          PAIRINGS[female] = male; // Ghép cặp
+          PAIRINGS[female] = male;
         }
       }
     });
+
+    // Tự động tạo nút chọn nhanh cho các Thầy/Cô xuất hiện trong file pairings.txt
+    renderTeacherQuickButtons();
   } catch (e) {
-    console.log("Chưa tìm thấy file pairings.txt, dùng mặc định.");
+    console.log("Chưa tìm thấy file pairings.txt.");
   }
+}
+
+function renderTeacherQuickButtons() {
+  const teachers = RECIPIENTS.filter(name => name.toLowerCase().includes('cô') || name.toLowerCase().includes('thầy'));
+  if (!teachers.length) return;
+
+  const container = $('teacher-buttons-container');
+  container.innerHTML = '';
+  
+  teachers.forEach((tName, idx) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'px-3 py-1.5 rounded-full bg-white border-2 border-plum text-xs font-extrabold text-plum hover:bg-candy-soft shadow-xs';
+    
+    // Đặt icon hoa linh hoạt
+    const icon = (idx % 2 === 0) ? '💐' : '🌷';
+    // Lấy tên ngắn gọn để hiển thị trên nút (ví dụ: "Cô Bảo Trân (GV thực tập)" -> lấy phần đầu)
+    btn.textContent = `${icon} ${tName}`;
+    
+    btn.addEventListener('click', () => {
+      pickName(tName);
+      handleLogin();
+    });
+    container.appendChild(btn);
+  });
+
+  $('teacher-quick-block').hidden = false;
 }
 
 const COLORS = ['#FFB9D2', '#F0629C', '#D9C9FF', '#9B7BE8', '#FFFFFF'];
@@ -447,7 +464,16 @@ const stripTones = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').rep
 const norm = (s) => stripTones(s).toLowerCase().replace(/\s+/g, ' ').trim();
 
 function fileCandidates(fullName) {
-  if (fullName === 'GVCN' || fullName === 'GVTT') return [fullName];
+  if (fullName.toLowerCase().includes('cô') || fullName.toLowerCase().includes('thầy')) {
+    // Nếu là giáo viên, cho phép tìm theo tên đầy đủ không dấu hoặc tên ngắn gọn
+    const plain = stripTones(fullName).trim();
+    const words = plain.split(/\s+/);
+    return [...new Set([
+      words.join('_'),
+      words.join('_').toLowerCase(),
+      fullName
+    ])];
+  }
   const plain = stripTones(fullName).trim();
   const words = plain.split(/\s+/);
   const given = words[words.length - 1];
@@ -568,14 +594,6 @@ document.addEventListener('click', (e) => {
   if (!e.target.closest('#name-field')) setSuggestionsOpen(false);
 });
 
-document.querySelectorAll('.btn-quick-teacher').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const teacherName = btn.getAttribute('data-name');
-    pickName(teacherName);
-    handleLogin();
-  });
-});
-
 function handleLogin() {
   const raw = input.value.trim();
   if (!raw) { showError('Bạn gõ tên rồi chọn trong danh sách gợi ý nhé.'); return; }
@@ -661,7 +679,7 @@ function initSession() {
 
 function renderCurrentSession() {
   const currentMale = maleHistory[historyIndex];
-  const isTeacher = (currentUser.includes('Cô Dịch Thị Hồng Ánh') || currentUser.includes('Cô Bảo Trân') || currentUser.includes('GVCN') || currentUser.includes('GVTT'));
+  const isTeacher = (currentUser.toLowerCase().includes('cô') || currentUser.toLowerCase().includes('thầy'));
   const isOfficial = (historyIndex === 0);
 
   if (isOfficial) {
@@ -782,8 +800,8 @@ async function fetchWish(names) {
 }
 
 function defaultWish(female, male) {
-  if (male === 'GVCN' || male === 'GVTT') {
-    return `Kính chúc ${female} ngày 20/10 tràn ngập niềm vui, hạnh phúc và luôn rạng rỡ!\nTập thể lớp 12A1 trân trọng cảm ơn cô! 💖`;
+  if (male.toLowerCase().includes('gvcn') || male.toLowerCase().includes('gvtt') || male.toLowerCase().includes('tập thể')) {
+    return `Kính chúc ${female} ngày 20/10 tràn ngập niềm vui, hạnh phúc và luôn rạng rỡ!\nTập thể lớp 12A1 trân trọng kính tặng cô! 💖`;
   }
   return `Chúc ${female} ngày 20/10 luôn xinh đẹp, học giỏi và tràn ngập niềm vui!\nThân tặng bạn, từ ${male} 💖`;
 }
@@ -829,114 +847,4 @@ async function checkAnonLetter() {
   for (const fileName of possibleNames) {
     try {
       const res = await fetch(`assets/AD/${fileName}.txt`, { cache: 'no-cache' });
-      if (!res.ok) continue;
-      const type = res.headers.get('content-type') || '';
-      const text = (await res.text()).trim();
-      if (!text || type.includes('text/html') || /^<!doctype|^<html/i.test(text)) continue;
-      
-      btn.hidden = false;
-      btn.onclick = () => openAnonModal(text);
-      break;
-    } catch (e) {}
-  }
-}
-
-function openAnonModal(rawText) {
-  const parts = rawText.split(/^---$/m);
-  const body = parts[0].trim();
-  const sig = parts[1] ? parts[1].trim() : '';
-
-  $('anon-content').textContent = body;
-  
-  const sigBox = $('anon-signature');
-  const sigText = $('anon-sig-text');
-  if (sig) {
-    sigText.textContent = sig;
-    sigBox.classList.remove('hidden');
-  } else {
-    sigBox.classList.add('hidden');
-  }
-
-  $('anon-modal').hidden = false;
-}
-
-function closeAnonModal() {
-  $('anon-modal').hidden = true;
-}
-
-$('btn-close-modal').addEventListener('click', closeAnonModal);$('btn-close-modal-bottom').addEventListener('click', closeAnonModal);
-
-function getHearts() { return parseInt(store.get(KEY_HEARTS + currentUser) || '0', 10) || 0; }
-
-function updateHeartUI() {
-  const n = getHearts();
-  $('heartCount').textContent = n ? `Bạn đã thả ${n} tim 💗` : '';
-}
-
-function heartEffect() {
-  store.set(KEY_HEARTS + currentUser, String(getHearts() + 1));
-  updateHeartUI();
-  if (!window.confetti) return;
-  confetti({
-    particleCount: 12,
-    spread: 50,
-    origin: { y: 0.75 },
-    colors: COLORS,
-    disableForReducedMotion: true
-  });
-}
-
-function backToName(clear) {
-  loadToken++;
-  vid.pause();
-  vid.removeAttribute('src');
-  vid.load();
-  vidErr.hidden = true;
-  bigPlay.hidden = true;
-  currentUser = '';
-  maleHistory = [];
-  historyIndex = 0;
-  if (clear) { input.value = ''; store.del(KEY_LAST_NAME); }
-  showError('');
-  setSuggestionsOpen(false);
-  resetGift();
-  showStep('step-select');
-}
-
-$('btn-login').addEventListener('click', handleLogin);
-gift.addEventListener('click', openGift);
-$('btn-open').addEventListener('click', openGift);$('btn-back-name').addEventListener('click', () => backToName(false));
-$('btn-heart').addEventListener('click', heartEffect);$('btn-prev-male').addEventListener('click', prevMale);
-$('btn-preview').addEventListener('click', previewOtherMale);$('btn-skip-outro').addEventListener('click', showOutro);
-$('btn-mine').addEventListener('click', showOfficial);$('btn-reset').addEventListener('click', () => backToName(true));
-
-$('btn-outro-mine').addEventListener('click', () => { showStep('step-result'); showOfficial(); });$('btn-outro-reset').addEventListener('click', () => backToName(true));
-
-/* Nền sinh động 16 hạt bay */
-(function ambient() {
-  const layer = $('ambient');
-  const items = ['🌸', '💗', '🌷', '💖', '✨', '🎈', '💜'];
-  for (let i = 0; i < 16; i++) {
-    const ch = items[i % items.length];
-    const s = document.createElement('span');
-    s.textContent = ch;
-    s.className = (i % 2 === 0) ? 'fall' : 'rise';
-    s.style.cssText =
-      `left:${rand(2, 95).toFixed(0)}%;font-size:${rand(1.1, 1.7).toFixed(2)}rem;` +
-      `animation-duration:${(10 + rand(0, 6)).toFixed(1)}s;` +
-      `animation-delay:-${rand(0, 12).toFixed(1)}s;--dx:${rand(-25, 25).toFixed(0)}px`;
-    layer.appendChild(s);
-  }
-})();
-
-// Khởi chạy: Tự động đọc file pairings.txt trước rồi mới khôi phục trạng thái
-loadPairingsFromFile().then(() => {
-  const remembered = store.get(KEY_LAST_NAME);
-  if (remembered && RECIPIENTS.includes(remembered)) input.value = remembered;
-  showStep('step-select');
-});
-
-})();
-</script>
-</body>
-</html>
+      if (!res.ok) continue
