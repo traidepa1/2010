@@ -232,7 +232,7 @@ body{
         <p id="name-error" role="alert" class="text-xs font-bold text-candy-deep" hidden></p>
         <p class="text-xs italic text-plum-soft">💡 Gõ vài chữ (không dấu cũng được), rồi chọn đúng tên mình trong danh sách.</p>
 
-        <!-- Khối chọn nhanh tự động sinh ra từ file pairings.txt -->
+        <!-- Khối chọn nhanh tự động -->
         <div id="teacher-quick-block" class="mt-3 pt-3 border-t border-pink-200/80" hidden>
           <p class="text-xs font-black text-plum mb-1.5 flex items-center gap-1">
             <span>🌸</span> Chọn nhanh cho các Cô giáo:
@@ -383,39 +383,67 @@ const MALES = [
   "Võ Minh Trí", "Trịnh Tuấn Vỹ"
 ];
 
+const DEFAULT_PAIRINGS = [
+  "Phù Lý Gia An - Trương Gia Phát",
+  "Lê Thanh Quế Anh - Vũ Hoàng Gia Cát",
+  "Nguyễn Ngọc Trâm Anh - Ngô Gia Phú",
+  "Trần Ngọc Minh Châu - Trịnh Tuấn Vỹ",
+  "Lê Ngân Hạnh - Nguyễn Tiểu Long",
+  "Phạm Ngọc Hân - Nguyễn Hoàng Đạt",
+  "Nguyễn Hồng Mỹ Kim - Tô Thuận Hưng",
+  "Trịnh Thị Ngọc Linh - Huỳnh Phúc An",
+  "Lê Nguyễn Thảo My - Vũ Thái Tâm",
+  "Trương Gia Nghi - Văn Bùi Đăng Khôi",
+  "Nguyễn Ngọc Bảo Nhi - Nguyễn Khắc Hoàng Minh",
+  "Bùi Lê Như Thảo - Lâm Hoàng Gia Thuận",
+  "Lưu Bảo Thy - Đoàn Nhật Quang",
+  "Lê Thủy Thiên Tú - Võ Minh Trí",
+  "Nguyễn Cát Tường - Ngô Minh Đông",
+  "Lê Ngọc Tường Vy - Nguyễn Minh Quân",
+  "Nguyễn Ngọc Hà Vy - Cao Minh Phúc",
+  "Nguyễn Thị Thảo Yến - Nguyễn Minh Khang",
+  "Cô Dịch Thị Hồng Ánh (GVCN) - GVCN",
+  "Cô Đoàn Trần Bảo Trân (GV thực tập) - GVTT"
+];
+
 let RECIPIENTS = [];
 let PAIRINGS = {};
 
-// Đọc file pairings.txt tự động và tạo nút chọn nhanh cho giáo viên
-async function loadPairingsFromFile() {
+function processPairingLines(lines) {
+  RECIPIENTS = [];
+  PAIRINGS = {};
+  lines.forEach(line => {
+    const cleaned = line.replace(/^\d+[\.\)]?\s*/, '').trim();
+    if (!cleaned || cleaned.startsWith('---')) return;
+    
+    const parts = cleaned.split('-');
+    if (parts.length >= 2) {
+      const female = parts[0].trim();
+      const male = parts[1].trim();
+      if (female && male) {
+        if (!RECIPIENTS.includes(female)) {
+          RECIPIENTS.push(female);
+        }
+        PAIRINGS[female] = male;
+      }
+    }
+  });
+  renderTeacherQuickButtons();
+}
+
+async function loadPairings() {
   try {
     const res = await fetch('pairings.txt', { cache: 'no-cache' });
-    if (!res.ok) return;
-    const text = await res.text();
-    const lines = text.split(/\r?\n/);
-    
-    lines.forEach(line => {
-      const cleaned = line.replace(/^\d+[\.\)]?\s*/, '').trim();
-      if (!cleaned || cleaned.startsWith('---')) return;
-      
-      const parts = cleaned.split('-');
-      if (parts.length >= 2) {
-        const female = parts[0].trim();
-        const male = parts[1].trim();
-        if (female && male) {
-          if (!RECIPIENTS.includes(female)) {
-            RECIPIENTS.push(female);
-          }
-          PAIRINGS[female] = male;
-        }
+    if (res.ok) {
+      const text = await res.text();
+      const lines = text.split(/\r?\n/);
+      if (lines.length > 1) {
+        processPairingLines(lines);
+        return;
       }
-    });
-
-    // Tự động tạo nút chọn nhanh cho các Thầy/Cô xuất hiện trong file pairings.txt
-    renderTeacherQuickButtons();
-  } catch (e) {
-    console.log("Chưa tìm thấy file pairings.txt.");
-  }
+    }
+  } catch (e) {}
+  processPairingLines(DEFAULT_PAIRINGS);
 }
 
 function renderTeacherQuickButtons() {
@@ -430,9 +458,7 @@ function renderTeacherQuickButtons() {
     btn.type = 'button';
     btn.className = 'px-3 py-1.5 rounded-full bg-white border-2 border-plum text-xs font-extrabold text-plum hover:bg-candy-soft shadow-xs';
     
-    // Đặt icon hoa linh hoạt
     const icon = (idx % 2 === 0) ? '💐' : '🌷';
-    // Lấy tên ngắn gọn để hiển thị trên nút (ví dụ: "Cô Bảo Trân (GV thực tập)" -> lấy phần đầu)
     btn.textContent = `${icon} ${tName}`;
     
     btn.addEventListener('click', () => {
@@ -464,16 +490,6 @@ const stripTones = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').rep
 const norm = (s) => stripTones(s).toLowerCase().replace(/\s+/g, ' ').trim();
 
 function fileCandidates(fullName) {
-  if (fullName.toLowerCase().includes('cô') || fullName.toLowerCase().includes('thầy')) {
-    // Nếu là giáo viên, cho phép tìm theo tên đầy đủ không dấu hoặc tên ngắn gọn
-    const plain = stripTones(fullName).trim();
-    const words = plain.split(/\s+/);
-    return [...new Set([
-      words.join('_'),
-      words.join('_').toLowerCase(),
-      fullName
-    ])];
-  }
   const plain = stripTones(fullName).trim();
   const words = plain.split(/\s+/);
   const given = words[words.length - 1];
@@ -847,4 +863,41 @@ async function checkAnonLetter() {
   for (const fileName of possibleNames) {
     try {
       const res = await fetch(`assets/AD/${fileName}.txt`, { cache: 'no-cache' });
-      if (!res.ok) continue
+      if (!res.ok) continue;
+      const type = res.headers.get('content-type') || '';
+      const text = (await res.text()).trim();
+      if (!text || type.includes('text/html') || /^<!doctype|^<html/i.test(text)) continue;
+      
+      btn.hidden = false;
+      btn.onclick = () => openAnonModal(text);
+      break;
+    } catch (e) {}
+  }
+}
+
+function openAnonModal(rawText) {
+  const parts = rawText.split(/^---$/m);
+  const body = parts[0].trim();
+  const sig = parts[1] ? parts[1].trim() : '';
+
+  $('anon-content').textContent = body;
+  
+  const sigBox = $('anon-signature');
+  const sigText = $('anon-sig-text');
+  if (sig) {
+    sigText.textContent = sig;
+    sigBox.classList.remove('hidden');
+  } else {
+    sigBox.classList.add('hidden');
+  }
+
+  $('anon-modal').hidden = false;
+}
+
+function closeAnonModal() {
+  $('anon-modal').hidden = true;
+}
+
+$('btn-close-modal').addEventListener('click', closeAnonModal);$('btn-close-modal-bottom').addEventListener('click', closeAnonModal);
+
+function getHearts() { return parseInt(store.get(KEY_HEARTS
