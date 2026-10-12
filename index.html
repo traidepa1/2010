@@ -241,10 +241,10 @@ body {
 }
 .suggestion-item:hover, .suggestion-item.active { background: #FFE4EE; color: var(--candy-deep); }
 
-/* Modal Thư Ẩn Danh */
+/* Modal Thư Ẩn Danh - Đã tối ưu không lag */
 .modal-backdrop {
-  position: fixed; inset: 0; background: rgba(35, 15, 45, 0.75);
-  backdrop-filter: blur(8px); z-index: 100; display: grid; place-items: center; padding: 1rem;
+  position: fixed; inset: 0; background: rgba(35, 15, 45, 0.82);
+  z-index: 100; display: grid; place-items: center; padding: 1rem;
 }
 
 /* Hiệu ứng tim bay */
@@ -419,7 +419,7 @@ body {
 
 <!-- Modal Đọc Thư Ẩn Danh -->
 <div id="anon-modal" class="modal-backdrop" hidden>
-  <div class="w-full max-w-[460px] rounded-3xl border-2 border-pink-300 bg-white/95 p-6 shadow-2xl space-y-4 text-left relative max-h-[85vh] overflow-y-auto">
+  <div class="w-full max-w-[460px] rounded-3xl border-2 border-pink-300 bg-white p-6 shadow-2xl space-y-4 text-left relative max-h-[85vh] overflow-y-auto">
     <div class="flex items-center justify-between border-b border-pink-200 pb-3">
       <h3 class="font-display text-lg font-extrabold text-candy-deep flex items-center gap-2"><span>💌</span> Bức thư ẩn danh gửi riêng bạn</h3>
       <button id="btn-close-modal" class="w-8 h-8 rounded-full bg-pink-100 hover:bg-pink-200 text-plum font-black text-sm flex items-center justify-center" type="button">✕</button>
@@ -482,7 +482,6 @@ function playHeartPop() {
   playTone(880.00, 'sine', 0.25, 0.04, 0.12);
 }
 
-// Danh sách các bạn nam tự động lấy từ pairings.txt (đã loại bỏ Đức và GVCN/GVTT)
 let MALES = [
   "Cao Minh Phúc", "Đoàn Nhật Quang", "Huỳnh Phúc An", "Lâm Hoàng Gia Thuận",
   "Ngô Gia Phú", "Ngô Minh Đông", "Nguyễn Hoàng Đạt", "Nguyễn Khắc Hoàng Minh",
