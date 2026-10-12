@@ -65,6 +65,19 @@ body{
 @keyframes fall{from{transform:translate3d(0,-10vh,0) rotate(0deg)}to{transform:translate3d(var(--dx,20px),110vh,0) rotate(360deg)}}
 @keyframes rise{from{transform:translate3d(0,0,0) rotate(0deg)}to{transform:translate3d(var(--dx,15px),-115vh,0) rotate(-360deg)}}
 
+/* ---------- Hiệu ứng tim bay nổi khi bấm nút Thả Tim ---------- */
+.floating-heart {
+  position: fixed;
+  z-index: 999;
+  pointer-events: none;
+  animation: floatUp 1s ease-out forwards;
+  font-size: 1.5rem;
+}
+@keyframes floatUp {
+  0% { transform: translateY(0) scale(0.6); opacity: 1; }
+  100% { transform: translateY(-120px) scale(1.4); opacity: 0; }
+}
+
 /* ---------- Nút & chip mượt mà ---------- */
 .btn{
   position:relative; overflow:hidden;
@@ -375,7 +388,6 @@ body{
 (() => {
 'use strict';
 
-// Danh sách tất cả các bạn nam tự động lấy từ thư mục wishes (đã xóa Nguyễn Ngọc Đức và loại GVCN/GVTT)
 let MALES = [
   "Cao Minh Phúc", "Đoàn Nhật Quang", "Huỳnh Phúc An", "Lâm Hoàng Gia Thuận",
   "Ngô Gia Phú", "Ngô Minh Đông", "Nguyễn Hoàng Đạt", "Nguyễn Khắc Hoàng Minh",
@@ -429,7 +441,6 @@ function processPairingLines(lines) {
         }
         PAIRINGS[female] = male;
 
-        // Tự động thu thập tên các bạn nam từ file pairings.txt (trừ GVCN/GVTT)
         if (male !== "GVCN" && male !== "GVTT" && !activeMales.includes(male)) {
           activeMales.push(male);
         }
@@ -667,8 +678,7 @@ function fireworks() {
     particleCount: 40,
     spread: 60,
     origin: { y: 0.7 },
-    colors: COLORS,
-    disableForReducedMotion: true
+    colors: COLORS
   });
 }
 
@@ -920,16 +930,35 @@ function updateHeartUI() {
   $('heartCount').textContent = n ? `Bạn đã thả ${n} tim 💗` : '';
 }
 
-function heartEffect() {
+// Hàm tạo hiệu ứng trái tim bay vút lên màn hình khi bấm nút Thả Tim
+function spawnFloatingHeart(e) {
+  const heartSymbols = ['💖', '💗', '💓', '✨', '🌸'];
+  const heart = document.createElement('div');
+  heart.className = 'floating-heart';
+  heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+  
+  const rect = e.target.getBoundingClientRect();
+  const x = rect.left + rect.width / 2 + rand(-30, 30);
+  const y = rect.top + rand(-10, 10);
+  
+  heart.style.left = `${x}px`;
+  heart.style.top = `${y}px`;
+  document.body.appendChild(heart);
+  
+  setTimeout(() => { heart.remove(); }, 1000);
+}
+
+function heartEffect(e) {
   store.set(KEY_HEARTS + currentUser, String(getHearts() + 1));
   updateHeartUI();
+  spawnFloatingHeart(e);
+  
   if (!window.confetti) return;
   confetti({
-    particleCount: 12,
+    particleCount: 15,
     spread: 50,
     origin: { y: 0.75 },
-    colors: COLORS,
-    disableForReducedMotion: reduceMotion()
+    colors: COLORS
   });
 }
 
@@ -953,7 +982,7 @@ function backToName(clear) {
 $('btn-login').addEventListener('click', handleLogin);
 gift.addEventListener('click', openGift);
 $('btn-open').addEventListener('click', openGift);$('btn-back-name').addEventListener('click', () => backToName(false));
-$('btn-heart').addEventListener('click', heartEffect);$('btn-prev-male').addEventListener('click', prevMale);
+$('btn-heart').addEventListener('click', (e) => heartEffect(e));$('btn-prev-male').addEventListener('click', prevMale);
 $('btn-preview').addEventListener('click', previewOtherMale);$('btn-skip-outro').addEventListener('click', showOutro);
 $('btn-mine').addEventListener('click', showOfficial);$('btn-reset').addEventListener('click', () => backToName(true));
 
