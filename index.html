@@ -109,7 +109,6 @@ body{
 }
 .link-btn:hover{color:var(--candy-deep)}
 
-/* Tinh chỉnh chip đầu trang: vừa vặn, không bị tràn dòng trên điện thoại */
 .chip{
   display:inline-block; background:rgba(255,255,255,0.95);
   border:2.5px solid var(--plum); border-radius:999px; padding:.35rem 1rem;
@@ -210,7 +209,6 @@ body{
 
 <main class="relative z-10 mx-auto flex w-full max-w-[680px] flex-col items-center">
 
-  <!-- Tiêu đề trên cùng đã chỉnh nhỏ gọn và cho phép xuống dòng nếu màn hình nhỏ -->
   <span class="chip mb-2">
     ✨ Chào mừng 20/10 <br class="sm:hidden"> Tập thể lớp 12A1 ✨
   </span>
@@ -392,37 +390,43 @@ const MALES = [
   "Võ Minh Trí", "Trịnh Tuấn Vỹ"
 ];
 
-const RECIPIENTS = [
-  "Phù Lý Gia An", "Lê Thanh Quế Anh", "Nguyễn Ngọc Trâm Anh", "Trần Ngọc Minh Châu",
-  "Lê Ngân Hạnh", "Phạm Ngọc Hân", "Nguyễn Hồng Mỹ Kim", "Trịnh Thị Ngọc Linh",
-  "Lê Nguyễn Thảo My", "Trương Gia Nghi", "Nguyễn Ngọc Bảo Nhi", "Bùi Lê Như Thảo",
-  "Lưu Bảo Thy", "Lê Thủy Thiên Tú", "Nguyễn Cát Tường", "Lê Ngọc Tường Vy",
-  "Nguyễn Ngọc Hà Vy", "Nguyễn Thị Thảo Yến",
+let RECIPIENTS = [
   "Cô Dịch Thị Hồng Ánh (GVCN)", "Cô Bảo Trân (GV thực tập)"
 ];
-
-const PAIRINGS = {
-  "Phù Lý Gia An":               "Trương Gia Phát",
-  "Lê Thanh Quế Anh":            "Vũ Hoàng Gia Cát",
-  "Nguyễn Ngọc Trâm Anh":        "Ngô Gia Phú",
-  "Trần Ngọc Minh Châu":         "Trịnh Tuấn Vỹ",
-  "Lê Ngân Hạnh":                "Nguyễn Tiểu Long",
-  "Phạm Ngọc Hân":               "Nguyễn Hoàng Đạt",
-  "Nguyễn Hồng Mỹ Kim":          "Tô Thuận Hưng",
-  "Trịnh Thị Ngọc Linh":         "Huỳnh Phúc An",
-  "Lê Nguyễn Thảo My":           "Vũ Thái Tâm",
-  "Trương Gia Nghi":             "Nguyễn Minh Khang",
-  "Nguyễn Ngọc Bảo Nhi":         "Nguyễn Khắc Hoàng Minh",
-  "Bùi Lê Như Thảo":             "Lâm Hoàng Gia Thuận",
-  "Lưu Bảo Thy":                 "Đoàn Nhật Quang",
-  "Lê Thủy Thiên Tú":            "Võ Minh Trí",
-  "Nguyễn Cát Tường":            "Ngô Minh Đông",
-  "Lê Ngọc Tường Vy":            "Nguyễn Minh Quân",
-  "Nguyễn Ngọc Hà Vy":           "Cao Minh Phúc",
-  "Nguyễn Thị Thảo Yến":         "Nguyễn Ngọc Đức",
+let PAIRINGS = {
   "Cô Dịch Thị Hồng Ánh (GVCN)": "GVCN",
   "Cô Bảo Trân (GV thực tập)":   "GVTT"
 };
+
+// Đọc file pairings.txt tự động để lấy danh sách nữ - nam
+async function loadPairingsFromFile() {
+  try {
+    const res = await fetch('pairings.txt', { cache: 'no-cache' });
+    if (!res.ok) return;
+    const text = await res.text();
+    const lines = text.split(/\r?\n/);
+    
+    lines.forEach(line => {
+      // Loại bỏ số thứ tự ở đầu (vd: "1 Gia An - Dang Khoi" -> "Gia An - Dang Khoi")
+      const cleaned = line.replace(/^\d+[\.\)]?\s*/, '').trim();
+      if (!cleaned || cleaned.startsWith('---')) return;
+      
+      const parts = cleaned.split('-');
+      if (parts.length >= 2) {
+        const female = parts[0].trim();
+        const male = parts[1].trim();
+        if (female && male) {
+          if (!RECIPIENTS.includes(female)) {
+            RECIPIENTS.unshift(female); // Thêm vào danh sách nữ
+          }
+          PAIRINGS[female] = male; // Ghép cặp
+        }
+      }
+    });
+  } catch (e) {
+    console.log("Chưa tìm thấy file pairings.txt, dùng mặc định.");
+  }
+}
 
 const COLORS = ['#FFB9D2', '#F0629C', '#D9C9FF', '#9B7BE8', '#FFFFFF'];
 const KEY_LAST_NAME = '12a1_last_name';
@@ -649,7 +653,7 @@ function setCaption(label, name, tag) {
 }
 
 function initSession() {
-  const official = PAIRINGS[currentUser];
+  const official = PAIRINGS[currentUser] || MALES[0];
   maleHistory = [official];
   historyIndex = 0;
   renderCurrentSession();
@@ -689,7 +693,7 @@ function renderCurrentSession() {
 function previewOtherMale() {
   let available = MALES.filter((m) => !maleHistory.includes(m));
   
-  if (!available.length && maleHistory.length >= 18) {
+  if (!available.length && maleHistory.length >= MALES.length) {
     showOutro();
     return;
   }
@@ -925,9 +929,12 @@ $('btn-outro-mine').addEventListener('click', () => { showStep('step-result'); s
   }
 })();
 
-const remembered = store.get(KEY_LAST_NAME);
-if (remembered && RECIPIENTS.includes(remembered)) input.value = remembered;
-showStep('step-select');
+// Khởi chạy: Tự động đọc file pairings.txt trước rồi mới khôi phục trạng thái
+loadPairingsFromFile().then(() => {
+  const remembered = store.get(KEY_LAST_NAME);
+  if (remembered && RECIPIENTS.includes(remembered)) input.value = remembered;
+  showStep('step-select');
+});
 
 })();
 </script>
