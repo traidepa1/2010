@@ -375,12 +375,13 @@ body{
 (() => {
 'use strict';
 
-const MALES = [
-  "Huỳnh Phúc An", "Vũ Hoàng Gia Cát", "Nguyễn Hoàng Đạt", "Ngô Minh Đông",
-  "Nguyễn Ngọc Đức", "Tô Thuận Hưng", "Nguyễn Minh Khang", "Nguyễn Tiểu Long",
-  "Nguyễn Khắc Hoàng Minh", "Trương Gia Phát", "Ngô Gia Phú", "Cao Minh Phúc",
-  "Đoàn Nhật Quang", "Nguyễn Minh Quân", "Vũ Thái Tâm", "Lâm Hoàng Gia Thuận",
-  "Võ Minh Trí", "Trịnh Tuấn Vỹ"
+// Danh sách tất cả các bạn nam tự động lấy từ thư mục wishes (đã xóa Nguyễn Ngọc Đức và loại GVCN/GVTT)
+let MALES = [
+  "Cao Minh Phúc", "Đoàn Nhật Quang", "Huỳnh Phúc An", "Lâm Hoàng Gia Thuận",
+  "Ngô Gia Phú", "Ngô Minh Đông", "Nguyễn Hoàng Đạt", "Nguyễn Khắc Hoàng Minh",
+  "Nguyễn Minh Khang", "Nguyễn Minh Quân", "Nguyễn Tiểu Long", "Tô Thuận Hưng",
+  "Trịnh Tuấn Vỹ", "Trương Gia Phát", "Văn Bùi Đăng Khôi", "Võ Minh Trí",
+  "Vũ Hoàng Gia Cát", "Vũ Thái Tâm"
 ];
 
 const DEFAULT_PAIRINGS = [
@@ -412,6 +413,8 @@ let PAIRINGS = {};
 function processPairingLines(lines) {
   RECIPIENTS = [];
   PAIRINGS = {};
+  const activeMales = [];
+
   lines.forEach(line => {
     const cleaned = line.replace(/^\d+[\.\)]?\s*/, '').trim();
     if (!cleaned || cleaned.startsWith('---')) return;
@@ -425,9 +428,19 @@ function processPairingLines(lines) {
           RECIPIENTS.push(female);
         }
         PAIRINGS[female] = male;
+
+        // Tự động thu thập tên các bạn nam từ file pairings.txt (trừ GVCN/GVTT)
+        if (male !== "GVCN" && male !== "GVTT" && !activeMales.includes(male)) {
+          activeMales.push(male);
+        }
       }
     }
   });
+
+  if (activeMales.length > 0) {
+    MALES = activeMales;
+  }
+
   renderTeacherQuickButtons();
 }
 
@@ -706,7 +719,7 @@ function renderCurrentSession() {
     }
     $('btn-mine').hidden = true;
   } else {
-    setCaption('Đang xem thử clip vui của:', currentMale, `🎲 Xem giải trí (Bạn thứ ${historyIndex}/18)`);
+    setCaption('Đang xem thử clip vui của:', currentMale, `🎲 Xem giải trí (Bạn thứ ${historyIndex}/${MALES.length})`);
     $('btn-mine').hidden = false;
   }
 
@@ -916,7 +929,7 @@ function heartEffect() {
     spread: 50,
     origin: { y: 0.75 },
     colors: COLORS,
-    disableForReducedMotion: true
+    disableForReducedMotion: reduceMotion()
   });
 }
 
