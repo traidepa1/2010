@@ -241,7 +241,7 @@ body {
 }
 .suggestion-item:hover, .suggestion-item.active { background: #FFE4EE; color: var(--candy-deep); }
 
-/* Modal Thư Ẩn Danh - Đã tối ưu không lag */
+/* Modal Thư Ẩn Danh */
 .modal-backdrop {
   position: fixed; inset: 0; background: rgba(35, 15, 45, 0.82);
   z-index: 100; display: grid; place-items: center; padding: 1rem;
@@ -484,10 +484,10 @@ function playHeartPop() {
 
 let MALES = [
   "Cao Minh Phúc", "Đoàn Nhật Quang", "Huỳnh Phúc An", "Lâm Hoàng Gia Thuận",
-  "Ngô Gia Phú", "Ngô Minh Đông", "Nguyễn Hoàng Đạt", "Nguyễn Khắc Hoàng Minh",
-  "Nguyễn Minh Khang", "Nguyễn Minh Quân", "Nguyễn Tiểu Long", "Tô Thuận Hưng",
-  "Trịnh Tuấn Vỹ", "Trương Gia Phát", "Văn Bùi Đăng Khôi", "Võ Minh Trí",
-  "Vũ Hoàng Gia Cát", "Vũ Thái Tâm"
+  "Ngô Gia Phú", "Ngô Minh Đông", "Nguyễn Hoàng Đạt", "Nguyễn Huỳnh Gia Bảo",
+  "Nguyễn Khắc Hoàng Minh", "Nguyễn Minh Khang", "Nguyễn Minh Quân", "Nguyễn Tiểu Long",
+  "Tô Thuận Hưng", "Trịnh Tuấn Vỹ", "Trương Gia Phát", "Văn Bùi Đăng Khôi",
+  "Võ Minh Trí", "Vũ Hoàng Gia Cát", "Vũ Thái Tâm"
 ];
 
 const DEFAULT_PAIRINGS = [
@@ -796,7 +796,7 @@ function renderCurrentSession() {
     else setCaption('Người gửi lời chúc bí mật 20/10 tới bạn là:', currentMale, 'Món quà đặc biệt dành riêng cho bạn');
     $('btn-mine').hidden = true;
   } else {
-    setCaption('Đang xem thử clip vui của:', currentMale, `Xem giải trí (Bạn thứ ${historyIndex}/${MALES.length})`);
+    setCaption('Đang xem thử clip vui của:', currentMale, `Xem giải trí (Bạn thứ ${historyIndex}/17)`);
     $('btn-mine').hidden = false;
   }
 
