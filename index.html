@@ -205,12 +205,12 @@ body {
 }
 .giftbox.open .gb-letter { transform: translate(-50%, -6.2rem) scale(1.35) rotate(-6deg); opacity: 1; }
 
-/* Khung Video */
+/* Khung Media (Video hoặc Ảnh GV) */
 .polaroid-frame {
   position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 1.2rem;
   overflow: hidden; background: #1A0D23; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2); margin: 0 auto;
 }
-.polaroid-frame video { width: 100%; height: 100%; object-fit: contain; display: block; }
+.polaroid-frame video, .polaroid-frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .bigplay-btn {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
   width: 4.8rem; height: 4.8rem; border-radius: 50%; border: 3px solid rgba(255, 255, 255, 0.95);
@@ -344,11 +344,11 @@ body {
     </div>
   </section>
 
-  <!-- Bước 3: Video & Lời chúc -->
+  <!-- Bước 3: Video/Ảnh & Lời chúc -->
   <section id="step-result" class="mt-2 w-full max-w-[530px] space-y-4" hidden>
     <div class="glass-panel p-5 md:p-6 space-y-4">
       <span class="washi-tape l"></span><span class="washi-tape r"></span>
-      <div class="polaroid-frame">
+      <div class="polaroid-frame" id="mediaFrame">
         <video id="vid" playsinline controls preload="metadata"></video>
         <button class="bigplay-btn" id="bigPlay" type="button" aria-label="Phát video" hidden>▶</button>
         <div class="vid-err-box" id="vidErr" hidden>
@@ -902,12 +902,38 @@ function defaultWish(female, male) {
 function loadMedia(maleName, femaleName) {
   const token = ++loadToken;
   const names = fileCandidates(maleName);
-  videoTries = names.map((n) => `assets/videos/${n}.mp4`);
-  videoIdx = 0;
-  vidErr.hidden = true;
-  bigPlay.hidden = true;
-  $('vidErrPath').textContent = videoTries[0];
-  playCurrentVideo();
+  const isTeacher = (femaleName.toLowerCase().includes('cô') || femaleName.toLowerCase().includes('thầy')) || 
+                    (maleName === 'GVCN' || maleName === 'GVTT');
+
+  const frame = $('mediaFrame');
+
+  if (isTeacher) {
+    vid.pause();
+    vid.hidden = true;
+    bigPlay.hidden = true;
+    vidErr.hidden = true;
+
+    let imgEl = frame.querySelector('img.teacher-img');
+    if (!imgEl) {
+      imgEl = document.createElement('img');
+      imgEl.className = 'teacher-img w-full h-full object-cover';
+      frame.appendChild(imgEl);
+    }
+    imgEl.src = `assets/images/${names[0]}.jpg`;
+    imgEl.onerror = () => { imgEl.src = `assets/images/GVCN.jpg`; };
+    imgEl.hidden = false;
+  } else {
+    const imgEl = frame.querySelector('img.teacher-img');
+    if (imgEl) imgEl.hidden = true;
+    vid.hidden = false;
+
+    videoTries = names.map((n) => `assets/videos/${n}.mp4`);
+    videoIdx = 0;
+    vidErr.hidden = true;
+    bigPlay.hidden = true;
+    $('vidErrPath').textContent = videoTries[0];
+    playCurrentVideo();
+  }
 
   wishEl.textContent = 'Đang tải lời chúc...';
   fetchWish(names).then((text) => {
